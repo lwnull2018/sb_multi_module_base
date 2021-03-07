@@ -1,0 +1,72 @@
+# 应用启动端口
+server:
+  port: 8080
+
+#-----------------------------------数据库配置----------------------------------------
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/yizhifu?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: a12341234
+
+  #redis配置
+  redis:
+    database: 0
+    host: 192.168.1.93
+    port: 6379
+    password: redis123
+    jedis:
+      pool:
+        ## 连接池最大连接数（使用负值表示没有限制）
+        max-active: 8
+        ## 连接池中的最大空闲连接
+        max-idle: 8
+        ## 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 1ms
+        ## 连接池中的最小空闲连接
+        min-idle: 0
+    timeout: 10000ms
+
+## 指定mybatis mapper 文件所在目录
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+
+#rocketmq
+rocketmq:
+  #生产者配置
+  producer:
+    groupName: haha_100
+    namesrvAddr: 192.168.1.93:9876
+    TestTopicName: TestTopic
+    maxMessageSize: 1048576
+    sendMsgTimeout: 3000
+    retryTimesWhenSendFailed: 3
+
+  #消费者配置
+  consumer:
+    isOnOff: on
+    groupName: hehe_200
+    namesrvAddr: 192.168.1.93:9876
+    topics: TestTopic~*;
+    consumeThreadMin: 10
+    consumeThreadMax: 64
+    consumeMessageBatchMaxSize: 50
+
+#消费最大重试次数 : 失败重试延迟级别
+#rocketmq.consumer.messageDelayLevel=1s 5s 10s 30s 1m 2m 3m 4m 5m 6m 7m 8m 9m 10m 20m 30m 1h 2h
+consumer:
+  max:
+    reconsume:
+      times: 5
+
+
+#配置文件上传路径
+app.upload.path: /System/Volumes/Data/work/samples/father/web/src/main/resources/upload
+
+
+###配置mybatis 打印sql
+logging:
+  level:
+    com.sb.example.dao: error
+

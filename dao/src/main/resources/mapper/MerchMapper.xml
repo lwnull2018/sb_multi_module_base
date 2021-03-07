@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sb.example.dao.MerchMapper">
+  <resultMap id="BaseResultMap" type="com.sb.example.entity.Merch">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="create_time" jdbcType="VARCHAR" property="createTime" />
+    <result column="last_time" jdbcType="VARCHAR" property="lastTime" />
+    <result column="last_ip" jdbcType="VARCHAR" property="lastIp" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="appkey" jdbcType="VARCHAR" property="appkey" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="agent_id" jdbcType="VARCHAR" property="agentId" />
+    <result column="agent_fee" jdbcType="DECIMAL" property="agentFee" />
+    <result column="fee_config" jdbcType="VARCHAR" property="feeConfig" />
+    <result column="balance" jdbcType="DECIMAL" property="balance" />
+    <result column="freeze_balance" jdbcType="DECIMAL" property="freezeBalance" />
+  </resultMap>
+
+  <sql id="baseColumn">
+    id,username,password,create_time,last_time,last_ip,mobile,
+    appkey,`level`,status,agent_id,agent_fee,fee_config,balance,freeze_balance
+  </sql>
+
+  <select id="getMerchList" resultMap="BaseResultMap">
+    SELECT <include refid="baseColumn"/>
+    FROM merch as u
+    <where>
+      <if test="status != null and status > 0 ">
+        and status = #{status}
+      </if>
+      <if test="id != null and id != '' ">
+        and id = #{id}
+      </if>
+      <if test="agentId != null and agentId != '' ">
+        and agent_id  = #{agentId}
+      </if>
+        <if test="startTime != null and startTime != '' ">
+            and create_time >= #{startTime}
+        </if>
+        <if test="endTime != null and endTime != '' ">
+            and #{endTime} >= create_time
+        </if>
+    </where>
+      order by create_time desc
+  </select>
+
+    <update id="updateMerchFee">
+        UPDATE merch
+        SET fee_config = #{feeConfig}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePwd">
+        UPDATE merch
+        SET password = #{password}
+        WHERE username = #{username}
+    </update>
+
+    <update id="updateMerchStatus">
+        UPDATE merch
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="getMerchByUsername" resultMap="BaseResultMap">
+        SELECT <include refid="baseColumn"/>
+        FROM merch
+        WHERE username = #{username}
+        and status = 2
+        <if test="id != null">
+            and id != #{id}
+        </if>
+    </select>
+
+</mapper>
